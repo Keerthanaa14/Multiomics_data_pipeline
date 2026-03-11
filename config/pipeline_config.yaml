@@ -1,0 +1,292 @@
+# config/pipeline_config.yaml
+project:
+  name: "Multiomics Data pipeline"
+  version: "1.0"
+  description: "Alzheimer's disease biomarker discovery pipeline"
+  author: "Keerthanaa Balasubramanian Shanthi"
+  created_date: "11-03-2026"
+
+# Data filtering criteria
+filters:
+  disease:
+    name: "Alzheimer's disease"
+    ontology_id: "DOID:10652"   # Disease Ontology ID - REQUIRED
+    synonyms:                   # Alternative terms to search for
+      - "AD"
+      - "alzheimer"
+      - "dementia"
+      - "Alzheimer's"
+
+  publication_year:
+    min: 2015
+    max: 2025
+
+  tissue:
+    include:
+      - "brain"
+      - "hippocampus"
+      - "cortex"
+      - "frontal cortex"
+      - "temporal cortex"
+    exclude:
+      - "blood"
+      - "plasma"
+      - "serum"
+
+  cell_type:
+    include:
+      - "astrocyte"
+      - "microglia"
+      - "neuron"
+      - "oligodendrocyte"
+    exclude:
+      - "fibroblast"
+
+  organism:
+    include:
+      - "Homo sapiens"
+      
+# Study selection strategy
+study_selection:
+  total_studies: 6           # Optional global limit
+  per_repository:
+    geo: 3
+    pride: 3
+
+  selection_strategy: "most_recent"
+  # Available options:
+  # - most_recent: Select by publication date
+  # - largest_sample_size: Select studies with most samples
+  # - highest_metadata_completeness: Select best annotated studies
+  # - random: Random selection for testing
+  # - balanced_design: Balance by experimental design
+
+  fallback_strategy: "largest_sample_size"  # If primary strategy fails
+
+# Repository-specific settings
+repositories:
+  geo:
+    enabled: true
+    base_url: "https://www.ncbi.nlm.nih.gov/geo/"
+    api_endpoint: "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+    min_sample_size: 20
+    max_sample_size: 1000      # Avoid extremely large datasets in pilot
+    preferred_platforms:        # Prioritize these platforms
+      - "GPL570"               # Affymetrix Human Genome U133 Plus 2.0
+      - "GPL96"                # Affymetrix Human Genome U133A
+      - "GPL16791"             # Illumina HiSeq 2500
+    
+  pride:
+    enabled: true
+    base_url: "https://www.ebi.ac.uk/pride/"
+    api_endpoint: "https://www.ebi.ac.uk/pride/ws/archive/v2/"
+    min_sample_size: 15
+    max_sample_size: 500
+    preferred_instruments:
+      - "Q Exactive"
+      - "Orbitrap"
+      - "LTQ"
+
+# Method selection for different processing steps
+methods:
+  # RNA-seq normalization methods
+  rna_normalization:
+    primary_method: "deseq2_vst"
+    # Available options:
+    # - deseq2_vst: DESeq2 Variance Stabilizing Transformation
+    # - deseq2_rlog: DESeq2 regularized log transformation
+    # - tpm: Transcripts Per Million
+    # - fpkm: Fragments Per Kilobase Million
+    # - quantile: Quantile normalization
+    # - tmm: TMM (edgeR)
+    fallback_method: "quantile"
+    
+    parameters:
+      deseq2_vst:
+        blind: false
+        fitType: "parametric"
+      quantile:
+        ties_method: "average"
+
+  # Microarray normalization methods
+  microarray_normalization:
+    primary_method: "rma"
+    # Available options:
+    # - rma: Robust Multi-array Average
+    # - mas5: MAS 5.0
+    # - gcrma: GC-RMA
+    # - quantile: Quantile normalization only
+    fallback_method: "quantile"
+    
+    parameters:
+      rma:
+        background_correct: true
+        normalize: true
+        summarize: true
+
+  # Proteomics normalization methods
+  proteomics_normalization:
+    primary_method: "vsn"
+    # Available options:
+    # - vsn: Variance Stabilizing Normalization
+    # - quantile: Quantile normalization
+    # - median: Median normalization
+    # - loess: LOESS normalization
+    # - rlr: Relative Log Expression
+    fallback_method: "median"
+    
+    parameters:
+      vsn:
+        strata: null
+        lts_quantile: 0.9
+      median:
+        use_median_sweep: true
+
+  # Batch effect detection methods
+  batch_detection:
+    primary_method: "pvca"
+    # Available options:
+    # - pvca: Principal Variance Component Analysis
+    # - rle: Relative Log Expression
+    # - pca: Principal Component Analysis
+    # - combat_detection: ComBat-based detection
+    secondary_method: "pca"
+    
+    parameters:
+      pvca:
+        threshold: 0.6
+        n_components: 10
+      pca:
+        n_components: 10
+        explained_variance_threshold: 0.8
+
+  # Batch effect correction methods
+  batch_correction:
+    method: "combat"
+    # Available options:
+    # - combat: ComBat
+    # - combat_seq: ComBat-Seq for count data
+    # - limma: removeBatchEffect from limma
+    # - sva: Surrogate Variable Analysis
+    # - none: No correction
+    
+    parameters:
+      combat:
+        mod: null  # Model matrix for adjustment
+        par_prior: true
+        prior_plots: false
+      sva:
+        n_sv: null  # Auto-estimate number of surrogate variables
+
+  # Quality control methods
+  quality_control:
+    completeness_threshold: 0.7    # Minimum metadata completeness
+    outlier_detection_method: "iqr"
+    # Available options:
+    # - iqr: Interquartile Range
+    # - zscore: Z-score based
+    # - isolation_forest: Machine learning approach
+    
+    sample_filtering:
+      min_expression_threshold: 1.0
+      min_detection_rate: 0.1     # Minimum fraction of samples expressing
+    
+    gene_filtering:
+      min_samples_expressing: 0.1  # Minimum fraction of samples
+      variance_filter: true
+      low_variance_threshold: 0.01
+
+# Processing pipeline settings
+processing:
+  normalize_rna: true
+  normalize_proteomics: true
+  compute_qc: true
+  compute_batch_score: true
+  perform_batch_correction: false  # Set to true if needed
+  
+  # Parallel processing settings
+  max_workers: 4
+  chunk_size: 1000
+  
+  # Memory management
+  max_memory_gb: 16
+  cache_intermediate_results: true
+
+# Data validation settings
+validation:
+  strict_filtering: true
+  allow_missing_metadata: false
+  max_missing_percentage: 15     # Maximum allowed missing values per sample
+  
+  # Schema validation
+  validate_schemas: true
+  required_metadata_fields:
+    - "sample_id"
+    - "disease_status"
+    - "age"
+    - "sex"
+    - "tissue_type"
+  
+  # Data integrity checks
+  check_duplicates: true
+  check_data_types: true
+  validate_expression_ranges: true
+
+# Output settings
+output:
+  formats:
+    - "delta"      # Primary format for Databricks
+    - "parquet"    # For external consumption
+    - "csv"        # For manual inspection
+  
+  compression: "snappy"
+  partitioning:
+    enabled: true
+    partition_by: ["study_id", "data_type"]
+  
+  export_qc_reports: true
+  generate_summary_stats: true
+
+# Logging configuration
+logging:
+  level: "INFO"
+  # Available levels: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  
+  handlers:
+    file:
+      enabled: true
+      path: "logs/pipeline.log"
+      max_size_mb: 100
+      backup_count: 5
+      format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    
+    console:
+      enabled: true
+      format: "%(levelname)s: %(message)s"
+    
+    databricks:
+      enabled: true
+      log_to_workspace: true
+
+# Environment-specific overrides
+environments:
+  development:
+    study_selection:
+      total_studies: 2  # Smaller for testing
+      per_repository:
+        geo: 1
+        pride: 1
+    processing:
+      max_workers: 2
+      cache_intermediate_results: false
+    logging:
+      level: "DEBUG"
+  
+  production:
+    processing:
+      max_workers: 8
+      max_memory_gb: 32
+    validation:
+      strict_filtering: true
+    logging:
+      level: "INFO"
