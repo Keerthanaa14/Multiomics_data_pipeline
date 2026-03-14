@@ -9,7 +9,7 @@ project:
 # Data filtering criteria
 filters:
   disease:
-    name: "Alzheimer's disease"
+    name: "Alzheimer's disease" # optional
     ontology_id: "DOID:10652"   # Disease Ontology ID - REQUIRED
     synonyms:                   # Alternative terms to search for
       - "AD"
@@ -17,11 +17,11 @@ filters:
       - "dementia"
       - "Alzheimer's"
 
-  publication_year:
+  publication_year:   # optional
     min: 2015
     max: 2025
 
-  tissue:
+  tissue:     # optional
     include:
       - "brain"
       - "hippocampus"
@@ -33,7 +33,7 @@ filters:
       - "plasma"
       - "serum"
 
-  cell_type:
+  cell_type:   # optional
     include:
       - "astrocyte"
       - "microglia"
@@ -42,7 +42,7 @@ filters:
     exclude:
       - "fibroblast"
 
-  organism:
+  organism:   # optional
     include:
       - "Homo sapiens"
       
@@ -72,8 +72,6 @@ repositories:
     min_sample_size: 20
     max_sample_size: 1000      # Avoid extremely large datasets in pilot
     preferred_platforms:        # Prioritize these platforms
-      - "GPL570"               # Affymetrix Human Genome U133 Plus 2.0
-      - "GPL96"                # Affymetrix Human Genome U133A
       - "GPL16791"             # Illumina HiSeq 2500
     
   pride:
@@ -83,9 +81,7 @@ repositories:
     min_sample_size: 15
     max_sample_size: 500
     preferred_instruments:
-      - "Q Exactive"
       - "Orbitrap"
-      - "LTQ"
 
 # Method selection for different processing steps
 methods:
@@ -223,10 +219,20 @@ validation:
   required_metadata_fields:
     - "sample_id"
     - "disease_status"
+    - "Alzheimer's_disease_stage"
+    - "Diagnosis_method"
     - "age"
     - "sex"
     - "tissue_type"
-  
+    - "batch_information"
+    - "platform"
+    - "instrument"
+    - "publication_date"
+    - "study_id"
+    - "data_type"
+    - "repository"
+    - "organism"
+
   # Data integrity checks
   check_duplicates: true
   check_data_types: true
