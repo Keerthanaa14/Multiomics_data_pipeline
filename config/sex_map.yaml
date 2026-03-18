@@ -1,0 +1,16 @@
+male:
+- "male"
+- "man"
+- "boy"
+- "males"
+- "men"
+- "boys"
+- "M"
+female:
+- "female"
+- "woman"
+- "girl"
+- "females"
+- "women"
+- "girls"
+- "F"

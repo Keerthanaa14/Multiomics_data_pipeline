@@ -8,7 +8,7 @@ class StudyDiscovery:
         self.config = config_loader
         self.filters = self.config.get("filters", {})
         self.study_selection = self.config.get("study_selection", {})
-        self.repositories = self.config.get("repositories", [])
+
 
 
     def filter_studies(self, studies, repository_name):
@@ -16,16 +16,18 @@ class StudyDiscovery:
         Filter studies based on config; all filters are optional.
         """
         filtered = []
-        repo_config = self.filters.get(repository_name, {})
+        repo_config = self.config.get(f"repositories.{repository_name}", {})
 
         for study in studies:
             # disease filters
+            disease_name = study.get('disease_name', '').lower()
             disease_cfg = self.filters.get("disease", {})
             if disease_cfg.get('ontology_id') and study.get('disease_ontology_id') != disease_cfg['ontology_id']:
                 continue
-            if disease_cfg.get('name) and disease_cfg['name'].lower() not in study.get('disease_name', '').lower():
+            if disease_cfg.get('name'):
+                valid_terms = [disease_cfg.get('name', '').lower()] + [s.lower() for s in disease_cfg.get('synonyms', [])]
+            if not any(term in disease_name for term in valid_terms):
                 continue
-        
             # publication year filters
             pub_cfg = self.filters.get("publication_year", {})
             year = study.get('publication_year')
@@ -36,7 +38,7 @@ class StudyDiscovery:
                 
             # Tissue filters
             tissue_cfg = self.filters.get("tissue", {})
-            tissue =study.get('tissue_type', '').lower()
+            tissue = study.get('tissue_type', '').lower()
             include_tissue = [t.lower() for t in tissue_cfg.get('include', [])]
             exclude_tissue = [t.lower() for t in tissue_cfg.get('exclude', [])]
             if include_tissue and tissue not in include_tissue:
@@ -61,13 +63,14 @@ class StudyDiscovery:
                 continue
                 
             #sample size filters
-            min_samples = repo_config.get('min_samples_size')
-            max_samples = repo_config.get('max_samples_size')
+            min_samples = repo_config.get('min_sample_size')
+            max_samples = repo_config.get('max_sample_size')
             sample_size = study.get('sample_size')
-            if min_samples and sample_size < min_samples:
-                continue
-            if max_samples and sample_size > max_samples:
-                continue
+            if sample_size is not None:
+                if min_samples and sample_size < min_samples:
+                    continue
+                if max_samples and sample_size > max_samples:
+                    continue
 
             filtered.append(study)  
         return filtered

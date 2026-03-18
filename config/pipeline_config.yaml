@@ -1,4 +1,4 @@
-# config/pipeline_config.yaml
+
 project:
   name: "Multiomics Data pipeline"
   version: "1.0"
@@ -23,24 +23,14 @@ filters:
 
   tissue:     # optional
     include:
-      - "brain"
       - "hippocampus"
-      - "cortex"
-      - "frontal cortex"
-      - "temporal cortex"
     exclude:
-      - "blood"
-      - "plasma"
-      - "serum"
+
 
   cell_type:   # optional
     include:
-      - "astrocyte"
-      - "microglia"
-      - "neuron"
-      - "oligodendrocyte"
     exclude:
-      - "fibroblast"
+
 
   organism:   # optional
     include:
@@ -48,10 +38,10 @@ filters:
       
 # Study selection strategy
 study_selection:
-  total_studies: 6           # Optional global limit
+  total_studies: 3           # Optional global limit
   per_repository:
-    geo: 3
-    pride: 3
+    geo: 2
+    pride: 1
 
   selection_strategy: "most_recent"
   # Available options:
@@ -140,13 +130,13 @@ methods:
 
   # Batch effect detection methods
   batch_detection:
-    primary_method: "pvca"
+    primary_method: "pca"
     # Available options:
     # - pvca: Principal Variance Component Analysis
     # - rle: Relative Log Expression
     # - pca: Principal Component Analysis
     # - combat_detection: ComBat-based detection
-    secondary_method: "pca"
+    secondary_method: "pvca"
     
     parameters:
       pvca:
