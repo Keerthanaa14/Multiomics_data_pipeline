@@ -1,0 +1,56 @@
+sample_id:
+  - "sample_id"
+  - "sample"
+  - "id"
+disease_status:
+  - "disease_status"
+  - "disease"
+  - "status"
+  - "diagnosis"
+  - "disease_state"
+  - "disease"
+  - "condition"
+
+sex: 
+  - "sex"
+  - "gender"
+  - "male"
+  - "female"
+  - "unknown"
+
+age:
+  - "age"
+  - "age_at_diagnosis"
+  - "age_at_sample_collection"
+  - "age_at_death"
+
+tissue_type:
+  - "tissue_type"
+  - "tissue"
+
+organism:
+  - "organism"
+  - "species"
+  - "human"
+
+platforms:
+  - "platform"
+  - "technology"
+  - "assay_type"
+  - "method"
+  - "omics_type"
+  - "single-cell"
+  - "bulk"
+
+instrument:
+  - "instrument"
+  - "sequencing_platform"
+  - "sequencing_instrument"
+  - "mass_spectrometer"
+  - "machine"
+
+publication_date:
+  - "publication_date"
+  - "pub_date"
+  - "publication_year"
+  - "year"

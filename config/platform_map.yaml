@@ -1,0 +1,16 @@
+Illumina:
+  - "Illumina"
+  - "HiSeq"
+  - "NextSeq"
+  - "MiSeq"
+  - "iSeq"
+
+Affymetrix:
+  - "Affymetrix"
+  - "GeneChip"
+
+Orbitrap:
+  - "Orbitrap"
+  - "Q Exactive"
+  - "Fusion"
+  - "Lumos"

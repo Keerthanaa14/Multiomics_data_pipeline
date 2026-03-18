@@ -1,0 +1,17 @@
+neuron:
+  - "neuron"
+  - "neuronal"
+  - "neuronic"
+  - "neurocyte"
+
+astrocyte:
+  - "astrocyte"
+  - "astrocytic"
+
+microglia:
+  - "microglia"
+  - "microglial"
+
+oligodendrocyte:
+  - "oligodendrocyte"
+  - "oligodendrocytic"

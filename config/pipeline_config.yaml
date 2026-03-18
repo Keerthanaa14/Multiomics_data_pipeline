@@ -214,6 +214,7 @@ validation:
     - "age"
     - "sex"
     - "tissue_type"
+    - "tissue_detail"
     - "batch_information"
     - "platform"
     - "instrument"
