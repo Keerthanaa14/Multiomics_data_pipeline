@@ -28,6 +28,36 @@ def enforce_schema(df, required_columns):
             df[field] = "unknown"
     return df
 
+def align_metadata_expression(metadata, expression):
+    if expression is None:
+        return metadata, expression
+
+    #case 1: Samples are rows
+    if len(metadata) == expression.shape[0]:
+        metadata = metadata.reset_index(drop=True)
+        expression = expression.reset_index(drop=True)
+
+    #case 2: Samples are columns then transpose so compatable downstream
+    elif len(metadata) == expression.shape[1]:
+        expression = expression.T
+        metadata = metadata.reset_index(drop=True)
+        expression = expression.reset_index(drop=True)
+    
+    else:
+        raise ValueError("{len(metadata)} and expression ({expresion.shape}) sample sizes do not match after checking both orientations.")
+def validate_metadata(metadata):
+    required = ["sample_id", "batch"]
+
+    for col in required:
+        if col not in metadata.columns:
+            raise ValueError(f"Missing required column: {col}")
+    
+    if metadata["sample_id"].isnull().any():
+        raise ValueError("Null sample_id detected")
+    
+    if metadata["batch"].nunique()<1:
+        raise ValueError("Batch column invalid")
+
 # Main Harmonizer Class
 class MetadataHarmonizer:
     def __init__(self, config):
@@ -81,9 +111,25 @@ class MetadataHarmonizer:
 
         logging.warning(f"Unmapped value: {value}")
         return "unknown"
+    
+    #ensure fields critical for batch effect idenfication and correction are present
+    def ensure_core_fields(self,df,dataset_name):
+
+        #sample_id
+        if "sample_id" not in df.columns:
+            df["sample_id"] = [f"{dataset_name}_{i}" for i in range(len(df))]
+
+        #batch (critical for PCA and combat in future)
+        if "batch" not in df.columns:
+            if "study_id" in df.columns:
+                df["batch"] = df["study_id"]
+            elif "dataset_id" in df.columns:
+                df["batch"] = df["dataset_id"]
+            else:
+                df["batch"] = dataset_name
 
     # Main Harmonization function
-    def harmonize_metadata(self, df):
+    def harmonize_metadata(self, df, dataset_name):
         logging.info("Harmonizing metadata...")
 
         # Standardize column names first
@@ -106,6 +152,8 @@ class MetadataHarmonizer:
             df["tissue_type"] = df["tissue_type"].apply(
                 lambda x: self.harmonize_value(x, self.tissue_map)
             )
+        # enforce core pipeline fields
+        df = self.ensure_core_fields(df, dataset_name)
 
         # enforce schema
         df = enforce_schema(df, self.required_fields)
@@ -121,6 +169,8 @@ def run_harmonization(pipeline_config, data):
         expression = dataset.get("expression")
 
         metadata_clean = harmonizer.harmonize_metadata(metadata)
+        metadata_clean, expression = align_metadata_expression(metadata_clean, expression)
+        validate_metadata(metadata_clean)
         harmonized_data[dataset_name] = {"metadata": metadata_clean, "expression": expression}
 
         logging.info(f"Harmonized {dataset_name}")
