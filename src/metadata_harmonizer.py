@@ -128,6 +128,24 @@ class MetadataHarmonizer:
             else:
                 df["batch"] = dataset_name
 
+        #condition required for batch effect detection
+        if "condition" not in df.columns:
+            if "disease_status" in df.columns:
+                df["condition"] = df["disease_status"]
+            else:
+                df["condition"] = "unknown"
+
+        # study required for batch effect detection
+        df["study"] = dataset_name
+
+        # metadata placeholders for batch effect detection if not avaiable
+        df["feature_id_type"] = "unknown"
+        df["feature_id_standard"] = "unknown"
+        df["feature_mapping"] = "none"
+        df["feature_count"] = 0
+
+        return df
+
     # Main Harmonization function
     def harmonize_metadata(self, df, dataset_name):
         logging.info("Harmonizing metadata...")

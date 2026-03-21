@@ -7,3 +7,14 @@ fastapi
 uvicorn
 matplotlib
 rpy2
+numpy
+R packages:
+- ggplot2
+- PCAtools
+- DESeq2
+- edgeR
+- limma
+- sva
+- vsn
+- arrayQualityMetrics
+- biomaRt

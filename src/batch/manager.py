@@ -1,21 +1,50 @@
 import logging
-from .methods import apply_batch_method
+from batch.pca import run_pca
+from batch.pvca import run_pvca
+from batch.combat import run_combat
 
 def detect_batch_effect(data,config):
 
-    logging.info("Detecting batch effects...")
-    cfg= config["methods"]["batch_detection"]
-
-    primary = cfg["primary_method"]
-    secondary = cfg.get("secondary_method")
-    params = cfg.get("parameters", {})
-
     results = {}
 
-    #Run primary method
-    results["primary"] = apply_batch_method(data, primary, params)
+    params = config.get("methods.batch_detection.parameters", {})
 
-    if secondary:
-        results[secondary] = apply_batch_method(data, secondary, params)
-    
+    #PCA before batch correction
+
+    pca_before = run_pca(data, params.get("pca", {}))
+    pvca_before = run_pvca(data, params.get("pvca", {}))
+
+    results["pca_before"] = pca_before
+    results["pvca_before"] = pvca_before
+
+    batch_var = pvca_before.get("mean_batch_variance",0)
+    cond_var = pvca_before.get("mean_condition_variance",0)
+
+    logging.info(f"Batch variance: {batch_var:.3f}, Condition variance: {cond_var:.3f}")
+    apply_combat = batch_var > cond_var
+
+    results["combat_applied"] = apply_combat
+
+    # apply combat if needed
+
+    if apply_combat:
+        logging.info("Batch effect detected; applying ComBat")
+        for name, dataset in data.items():
+            expr = dataset["expression"]
+            meta = dataset["metadata"]
+
+            corrected = run_combat(expr, meta)
+            dataset["expression"] = corrected
+
+    else:
+        logging.info("No strong batch effect detected; skipping combat")
+
+    #PCA after Batch effect correction
+
+    pca_after = run_pca(data, params.get("pca",{}))
+    pvca_after = run_pvca(data, params.get("pvca", {}))
+
+    results["pca_after"] = pca_after
+    results["pvca_after"] = pvca_after
+
     return results
