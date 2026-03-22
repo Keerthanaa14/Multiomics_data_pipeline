@@ -73,6 +73,7 @@ class ConfigLoader:
         }
     def validate_required_fields(self, metadata):
         """Raise an error if any required metadata fields are missing."""
+        required_paths = self.get_required_metadata_fields()
         missing = []
         for path in required_paths:
             if self.get(path) is None:

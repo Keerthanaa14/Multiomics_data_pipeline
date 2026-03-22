@@ -2,8 +2,8 @@ import logging
 from logging import config
 from pathlib import Path
 
-def write_delta_table(data, pipeline_config):
-    
+def write_delta_table(data, config):
+
     logging.info("Writing bronze layer with lineage...")
     base_path = Path("data/bronze/delta_table")
     compression = config.get("output.compression", "snappy")

@@ -1,4 +1,6 @@
 import numpy as np
+from .methods import apply_method
+from .validators import validate_input
 import logging
 
 def normalize_expression(data, config):
@@ -21,6 +23,7 @@ def normalize_expression(data, config):
         else:
             logging.warning(f"{name}: Unknown repo choosing fallback options")
             cfg = {"primary_method":"zscore", "fallback_method":"zscore", "parameters":{}}
+            data_type = "UNKNOWN"
 
         primary = cfg["primary_method"]
         fallback = cfg.get("fallback_method")

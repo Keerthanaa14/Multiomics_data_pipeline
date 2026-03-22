@@ -1,5 +1,4 @@
 pandas
-os
 pyyaml
 rapidfuzz
 scikit-learn
@@ -8,6 +7,8 @@ uvicorn
 matplotlib
 rpy2
 numpy
+fastapi 
+uvicorn
 R packages:
 - ggplot2
 - PCAtools
