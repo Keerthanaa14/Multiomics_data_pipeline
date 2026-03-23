@@ -24,12 +24,13 @@ filters:
   tissue:     # optional
     include:
       - "hippocampus"
-    exclude:
+    exclude: []
+
 
 
   cell_type:   # optional
-    include:
-    exclude:
+    include: []
+    exclude: []
 
 
   organism:   # optional
@@ -127,6 +128,9 @@ methods:
         lts_quantile: 0.9
       median:
         use_median_sweep: true
+
+  feature_harmonization:
+    use_biomart: false
 
   # Batch effect detection methods
   batch_detection:

@@ -1,0 +1,5 @@
+dataset,repository,study_id,samples,features,feature_id_type,feature_id_standard,feature_mapping
+geo_GSE_SYNTH_0,geo,GSE_SYNTH_0,20,500,unknown,unknown,unknown
+geo_GSE_SYNTH_1,geo,GSE_SYNTH_1,20,500,unknown,unknown,unknown
+geo_GSE_SYNTH_2,geo,GSE_SYNTH_2,20,500,unknown,unknown,unknown
+pride_PRIDE_SYNTH_0,pride,PRIDE_SYNTH_0,20,300,unknown,unknown,unknown

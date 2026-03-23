@@ -1,20 +1,17 @@
 import logging
-
+from pathlib import Path
 from Config_loader import ConfigLoader
 
-# for ingestion and study discovery
-
+# ingestion and study discovery
 from injestion import run_ingestion
 from study_loader import load_available_studies
 from study_disocvery import StudyDiscovery
 
-#Delta table layer or parquet file compression
-
+# Delta layer
 from delta_writer import write_delta_table
 from delta_reader import read_delta_tables
 
-# Processing 
-
+# Processing
 from metadata_harmonizer import run_harmonization
 from normalization.manager import normalize_expression
 
@@ -23,75 +20,126 @@ from utils.imputation import impute_missing_values
 from utils.omics_split import split_by_omics
 from utils.feature_alignment import align_features
 
-# Batch effect detection, correction and QC
+# Batch + QC
 from batch.manager import detect_batch_effect
 from qc import compute_qc
 
-#machine learning for feature selection
+# ML
 from ml.feature_selection import run_feature_selection, aggregate_feature_importance
 
-#Final out or gold layer export
+# Output
 from gold_export import gold_export
 from catalog import build_catalog
 
+# R environment
+import os
+
+os.environ["R_HOME"] = r"C:\Program Files\R\R-4.5.2"
+os.environ["R_USER"] = r"C:\Program Files\R\R-4.5.2" 
+os.environ["PATH"] += r";C:\Program Files\R\R-4.5.2\bin\x64"
+
+#dashboard
+from dashboard_export import export_dashboard
+from dashboard_template import create_dashboard_html
+import webbrowser
+
+
 def run_pipeline():
+
     logging.basicConfig(level=logging.INFO)
     logging.info("starting multi-omics pipeline...")
 
-    # load configuration
-
+    # --------------------------------------------------
+    # Load config
+    # --------------------------------------------------
     config = ConfigLoader(
         "config/pipeline_config.yaml",
         environment="development"
     )
 
-    # study discovery and injestion
-
+    # --------------------------------------------------
+    # Study discovery
+    # --------------------------------------------------
     available = load_available_studies()
+
+    if isinstance(available, list):
+        grouped = {"geo": [], "pride": []}
+        for study in available:
+            repo = study.get("repository", "geo")
+            grouped.setdefault(repo, []).append(study)
+        available = grouped
+
     selected = StudyDiscovery(config).discover(available)
 
+    # --------------------------------------------------
+    # Ingestion
+    # --------------------------------------------------
     raw = run_ingestion(selected)
 
-    # bronze layer converted to parquet or delta table
-    write_delta_table(raw,config)
+    write_delta_table(raw, config)
     data = read_delta_tables(selected)
 
-    #metadata harmonization
+    # --------------------------------------------------
+    # Harmonization
+    # --------------------------------------------------
     data = run_harmonization(config, data)
 
-    #catalog
     build_catalog(data)
 
-    #normalization based on config
+    # --------------------------------------------------
+    # Normalization
+    # --------------------------------------------------
     data = normalize_expression(data, config)
 
-    #feature ID harmonization for cross study comparison
+    # --------------------------------------------------
+    # Feature harmonization + imputation
+    # --------------------------------------------------
     data = harmonize_feature_ids(data, config)
-
-    #missing value handling of proteomics data
     data = impute_missing_values(data, config)
 
-    #split by omics 
+    # --------------------------------------------------
+    # Split by omics
+    # --------------------------------------------------
     groups = split_by_omics(data)
 
     batch_results = {}
     feature_results = {}
 
-    # per omics processing
+    # --------------------------------------------------
+    # Per-omics processing
+    # --------------------------------------------------
     for group_name, group_data in groups.items():
 
         if len(group_data) == 0:
             continue
-        logging.info(f"Processing omics group:{group_name}")
 
-        #Feature alignment
+        logging.info(f"Processing omics group: {group_name}")
+
+        # --------------------------
+        # Feature alignment
+        # --------------------------
         group_data = align_features(group_data)
 
-        #batch detection, followed by ComBat; PCA before and after correction
-        batch_results = detect_batch_effect(group_data, config)
-        batch_results[group_name] = batch_results
+        # Safety check (prevents PCA crash)
+        for name, ds in group_data.items():
+            expr = ds["expression"]
+            meta = ds["metadata"]
 
-        # Featuure selection using ML after batch correction
+            if len(expr) != len(meta):
+                raise ValueError(f"{name}: mismatch before PCA")
+
+            # enforce alignment (final safety)
+            expr.index = meta["sample_id"].values
+
+        # --------------------------
+        # Batch detection
+        # --------------------------
+        result = detect_batch_effect(group_data, config)
+        batch_results[group_name] = result
+
+        # --------------------------
+        # Feature selection
+        # --------------------------
         logging.info(f"Running random forest for {group_name}")
 
         fs = run_feature_selection(group_data)
@@ -99,11 +147,15 @@ def run_pipeline():
 
         feature_results[group_name] = agg
 
-    #Quality control global
+    # --------------------------------------------------
+    # QC
+    # --------------------------------------------------
     qc_results = compute_qc(data, config)
 
-    #Export gold layer
-    export_gold(
+    # --------------------------------------------------
+    # Export
+    # --------------------------------------------------
+    gold_export(
         data=data,
         qc_results=qc_results,
         batch_results=batch_results,
@@ -112,7 +164,11 @@ def run_pipeline():
     )
 
     logging.info("pipeline completed!")
+    export_dashboard(data, qc_results, feature_results, batch_results)
+    create_dashboard_html()
+    dashboard_path = Path("dashboard/dashboard.html").resolve()
+    webbrowser.open(f"file:///{dashboard_path}")
+
 
 if __name__ == "__main__":
     run_pipeline()
-
