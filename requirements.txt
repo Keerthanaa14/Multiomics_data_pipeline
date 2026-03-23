@@ -9,6 +9,7 @@ rpy2
 numpy
 fastapi 
 uvicorn
+fastparquet
 R packages:
 - ggplot2
 - PCAtools

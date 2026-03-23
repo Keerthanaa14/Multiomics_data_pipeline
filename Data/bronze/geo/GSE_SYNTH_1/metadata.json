@@ -1,0 +1,11 @@
+{
+  "study_id": "GSE_SYNTH_1",
+  "repository": "geo",
+  "disease_name": "alzheimer disease",
+  "disease_ontology_id": "DOID:10652",
+  "publication_year": 2024,
+  "tissue_type": "hippocampus",
+  "cell_type": "microglia",
+  "organism": "Homo sapiens",
+  "sample_size": 20
+}

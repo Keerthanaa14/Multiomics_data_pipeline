@@ -1,5 +1,6 @@
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
+import logging
 
 def run_feature_selection(data):
 
@@ -10,10 +11,13 @@ def run_feature_selection(data):
         Y = dataset["metadata"]["condition"]
 
         # removing unknown labels
-        valid_idx = Y != "unknown"
-        X = X[valid_idx]
-        Y = Y[valid_idx]
-
+        Y = Y.reindex(X.index)
+        valid_idx = (Y != "unknown") & (Y.notna())
+        X = X.loc[valid_idx]
+        Y = Y.loc[valid_idx]
+        if len(Y) == 0:
+            logging.warning(f"{name}: no valid samples")
+            continue
         if len(set(Y)) < 2:
             continue
 
@@ -37,10 +41,21 @@ def run_feature_selection(data):
 def aggregate_feature_importance(results):
     if not results:
         return None
-    
-    df = pd.concat(results.values(), axis =1)
-    df.columns = results.keys()
+    dfs = []
+    names = []
+    for name, series in results.items():
+        if series is None or len(series) == 0:
+            continue
 
-    df["mean_importance"] = df.mean(axis=1)
+        dfs.append(series)
+        names.append(name)
+
+    if len(dfs) == 0:
+        return None
+    df = pd.concat(dfs, axis=1)
+    df.columns = names
+
+    df["mean_importance"] = df.mean(axis=1, skipna=True)
+    df = df.fillna(0)
 
     return df.sort_values("mean_importance", ascending=False)

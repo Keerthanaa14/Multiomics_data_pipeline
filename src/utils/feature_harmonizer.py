@@ -66,8 +66,14 @@ def harmonize_feature_ids(data,config):
         if any(col.startswith("ENSG") for col in df.columns [:50]):
 
             logging.info(f"{name}: Ensembl detected and mapping via biomaRT")
-
+        try:
             df = map_ensembl_to_symbol_biomart(df)
+        except Exception as e:
+            logging.warning(f"BiomaRt failed: {e}")
+            logging.warning("Falling back to simple ID cleaning")
+
+            df.columns = [c.split(".")[0] for c in df.columns]
+
 
     # proteomics ID cleaning
     elif repo == "pride":

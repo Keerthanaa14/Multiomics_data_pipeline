@@ -1,0 +1,11 @@
+{
+  "study_id": "PRIDE_SYNTH_0",
+  "repository": "pride",
+  "disease_name": "alzheimer disease",
+  "disease_ontology_id": "DOID:10652",
+  "publication_year": 2024,
+  "tissue_type": "hippocampus",
+  "cell_type": "microglia",
+  "organism": "Homo sapiens",
+  "sample_size": 20
+}
