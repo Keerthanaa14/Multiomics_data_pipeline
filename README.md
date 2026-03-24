@@ -206,7 +206,6 @@ logs/
 src/
 venv/
 
-
 # Innovativeness
 - Multiomics data integration (intiated)
 - Automated metadata harmonization
