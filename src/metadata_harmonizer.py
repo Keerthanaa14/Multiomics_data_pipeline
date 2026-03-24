@@ -134,54 +134,47 @@ class MetadataHarmonizer:
     # -----------------------------
     def ensure_core_fields(self, df, dataset_name):
 
-        # sample_id
+    # -----------------------------
+    # sample_id
+    # -----------------------------
         if "sample_id" not in df.columns:
             df["sample_id"] = [f"{dataset_name}_{i}" for i in range(len(df))]
 
-        df["sample_id"] = df["sample_id"].astype(str)
-
-        # batch
+    # -----------------------------
+    # batch
+    # -----------------------------
         if "batch" not in df.columns:
             if "study_id" in df.columns:
                 df["batch"] = df["study_id"]
             else:
                 df["batch"] = dataset_name
 
-        df["batch"] = df["batch"].astype(str)
-
-        # condition (CRITICAL FIX)
+    # -----------------------------
+    # condition
+    # -----------------------------
         if "condition" not in df.columns:
-
             if "disease_status" in df.columns:
                 df["condition"] = df["disease_status"]
             else:
                 df["condition"] = "unknown"
 
-        df["condition"] = df["condition"].astype(str).str.lower()
-
-        # normalize condition values
-        df["condition"] = df["condition"].replace({
-            "healthy": "control",
-            "normal": "control",
-            "case": "disease"
-        })
-
-        df.loc[~df["condition"].isin(["control", "disease"]), "condition"] = "unknown"
-
-        # dataset identity
+    # -----------------------------
+    # study
+    # -----------------------------
         df["study"] = dataset_name
-        
-    
-        if "data_type" not in df.columns:
 
-            # infer from dataset name
+    # -----------------------------
+    # data_type (omics FIX)
+    # -----------------------------
+        if "data_type" not in df.columns or df["data_type"].eq("unknown").all():
+
             if "geo" in dataset_name.lower():
                 df["data_type"] = "rna"
             elif "pride" in dataset_name.lower():
                 df["data_type"] = "proteomics"
             else:
-                df["data_type"] = "rna"
-        
+                df["data_type"] = "unknown"
+
         return df
 
     # -----------------------------

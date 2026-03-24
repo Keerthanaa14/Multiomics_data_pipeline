@@ -40,8 +40,7 @@ os.environ["PATH"] += r";C:\Program Files\R\R-4.5.2\bin\x64"
 
 #dashboard
 from dashboard_export import export_dashboard
-from dashboard_template import create_dashboard_html
-import webbrowser
+
 
 
 def run_pipeline():
@@ -164,10 +163,12 @@ def run_pipeline():
     )
 
     logging.info("pipeline completed!")
-    export_dashboard(data, qc_results, feature_results, batch_results)
-    create_dashboard_html()
-    dashboard_path = Path("dashboard/dashboard.html").resolve()
-    webbrowser.open(f"file:///{dashboard_path}")
+    print("DEBUG DASHBOARD INPUT")
+    print("Data keys:", list(data.keys()))
+    print("Batch results keys:", batch_results.keys())
+    print("Feature results keys:", feature_results.keys())
+    export_dashboard(data=data, qc_results=qc_results, feature_results=feature_results, batch_results=batch_results)
+    
 
 
 if __name__ == "__main__":
