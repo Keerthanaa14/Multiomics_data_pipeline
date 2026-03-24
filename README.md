@@ -1,9 +1,13 @@
-# Multiomics_data_pipeline
+# Multiomics data pipeline for cross study integration and feature selection
 AI usage disclosure
     This project utilized AI tools for:
-        - Debuggging pipeline error
-        - architechtural brainstorming
-        -code optimization suggestion
+        - Debuggging code (pipeline error, alignment issues, PCA bugs)
+        - architechtural design brainstorming (medallion design, batch correction)
+        -improving code structure and robustness
+
+    Not Used for:
+        - Direct copy paste of full soutions
+        - Writing final report content without modififcation
 All implementation, validation and final integration were performed by the auhtor
 
 #Team
@@ -19,13 +23,16 @@ Contribution:
 
 # Documents and Presentation
     - Pipeline architecutre description
-    -data schema documentation
+    - data schema documentation
     - end to end workflow explanation
+    - code linked explanations
+    - clear structure and readability
+    - Innovative multiomics integration
     - dashboard for results
 
 # Data Ingestion
     - Structed data( now works with synthetic data)
-    - multi-source injestion (API+syntehtic fallback)
+    - semi-structed data parsing (gene count files)
     - Automated batch injestion pipeline
 
 # Data Processing and cleaning
@@ -40,17 +47,23 @@ Contribution:
     - Data lieage tracking 
     - ML model (Random Forest feature selection)
     - Batch effect detection(PCA, PVCA)
-    - Batch correction (ComBat)
+    - Batch correction (ComBat) condiitonal only batch effect is found
 
 # Visualization and Monitoring
+    - HTML dashboard 
     - PCA (before and after batch correction)
     - pipeline statistics tracking
     - QC reports
 
 # Data Sharing
-    - Data product exported(Gold layer)
+    - Dashboards can be shared as data product along with gold layer
+    - structred  outputs
+
+# Data product
+    - Defined data schema (metadata + expression) 
     - API- ready structure
-    - can be deployed in cloud platforms like databricks with minimal chnages retaining the architecture
+    - Validation and testing hooks
+    - can be deployed in cloud platforms like databricks with minimal chages retaining the architecture
 
 # Logging
     - Structured logging across all stages
@@ -86,7 +99,7 @@ Normalization (config-driven)
    ↓
 Feature Harmonization (Gene/Protein IDs)
    ↓
-Missing Value Imputation
+Missing Value Imputation for proteomics
    ↓
 Split by Omics (RNA / Proteomics)
    ↓
@@ -141,24 +154,29 @@ Sample              Feature (gene/protein)
         - z-score
         - median normalization
 
-2. Feature ID harmonization
+2. Meta data harmonization
+        - synonym mapping
+        - Fuzzy mapping
+        - Schema enforcement
+
+3. Feature ID harmonization
     - Ensembl conversion to gene symbols using BioMart
     - Uniprot normalization
     - this ensures cross study compatability for feature selection
 
-3. Batch effect handling
+4. Batch effect handling
     Detection
         -PCA
         -PVCA
     Correction
         - ComBat(applied only if atch effect detected)
 
-4. Machine learning
+5. Machine learning
     - random forest classifier
     - feature importance extraction
     - per omics analysis
 
-5. PCA analysis
+6. PCA analysis
     - before and after batch correction
     - Used ot validate:
         - Batch removal
@@ -177,8 +195,21 @@ venv\Scripts\activate
 #run pipeline
 python src/run_pipeline.py
 
+# Repository Structure
+README.md
+requirements.txt
+LICENSE
+config/
+dashboard/
+Data/
+logs/
+src/
+venv/
+
+
 # Innovativeness
 - Multiomics data integration (intiated)
+- Automated metadata harmonization
 - COnfig driven achitecture
 - Automated batch detection and correction
 - ML integrated into ETL pipeline
@@ -201,3 +232,7 @@ This pipeline demonstrates a fully automated, reusable and iologically meaningfu
 - Data engineering
 - Bioinformatics
 - Machine Leanring
+
+![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)

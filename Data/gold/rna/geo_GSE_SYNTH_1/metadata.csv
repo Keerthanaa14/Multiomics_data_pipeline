@@ -1,0 +1,21 @@
+sample_id,disease_status,batch,study_id,repository,omics,condition,study,data_type,Alzheimer's_disease_stage,Diagnosis_method,age,sex,tissue_type,tissue_detail,batch_information,platform,instrument,publication_date,organism
+GSM_GSE_SYNTH_1_0,control,batch_2,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_1,Alzheimer's disease,batch_1,GSE_SYNTH_1,geo,rna,Alzheimer's disease,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_2,control,batch_2,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_3,control,batch_2,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_4,control,batch_2,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_5,Alzheimer's disease,batch_2,GSE_SYNTH_1,geo,rna,Alzheimer's disease,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_6,control,batch_2,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_7,control,batch_2,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_8,control,batch_2,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_9,Alzheimer's disease,batch_2,GSE_SYNTH_1,geo,rna,Alzheimer's disease,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_10,control,batch_1,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_11,control,batch_1,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_12,control,batch_2,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_13,control,batch_2,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_14,Alzheimer's disease,batch_2,GSE_SYNTH_1,geo,rna,Alzheimer's disease,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_15,control,batch_1,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_16,Alzheimer's disease,batch_2,GSE_SYNTH_1,geo,rna,Alzheimer's disease,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_17,Alzheimer's disease,batch_1,GSE_SYNTH_1,geo,rna,Alzheimer's disease,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_18,Alzheimer's disease,batch_1,GSE_SYNTH_1,geo,rna,Alzheimer's disease,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown
+GSM_GSE_SYNTH_1_19,control,batch_1,GSE_SYNTH_1,geo,rna,control,geo_GSE_SYNTH_1,rna,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown,unknown

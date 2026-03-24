@@ -17,7 +17,7 @@ def normalize_expression(data, config):
         original_index = df.index
         original_columns = df.columns
 
-        repo = metadata["repository"].iloc[0]
+        repo = metadata["repository"].iloc[0].lower()
 
         if repo == "geo":
             cfg = config.get("methods.rna_normalization", {})
@@ -66,5 +66,5 @@ def normalize_expression(data, config):
             raise ValueError(f"{name}: mismatch after normalization")
 
         processed[name] = {"metadata": metadata, "expression": df_norm, "normalized_with": used}
-        logging.info(f"{name}: ✅ normalized using {used}")
-        return processed
+        logging.info(f"{name}: normalized using {used}")
+    return processed

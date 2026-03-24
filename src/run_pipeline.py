@@ -41,8 +41,6 @@ os.environ["PATH"] += r";C:\Program Files\R\R-4.5.2\bin\x64"
 #dashboard
 from dashboard_export import export_dashboard
 
-
-
 def run_pipeline():
 
     logging.basicConfig(level=logging.INFO)
