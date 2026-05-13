@@ -227,7 +227,7 @@ venv/
 - Web dashboard / API deployment
 
 # Conclusion
-This pipeline demonstrates a fully automated, reusable and iologically meaningful data engineering solution for multi-omics data analysis and intergation:
+This pipeline demonstrates a fully automated, reusable and logically meaningful data engineering solution for multi-omics data analysis and intergation:
 - Data engineering
 - Bioinformatics
 - Machine Leanring
