@@ -1,236 +1,362 @@
-# Multiomics data pipeline for cross study integration and feature selection
-AI usage disclosure
-    This project utilized AI tools for:
-        - Debuggging code (pipeline error, alignment issues, PCA bugs)
-        - architechtural design brainstorming (medallion design, batch correction)
-        -improving code structure and robustness
+# Multiomics Data Pipeline for Cross-Study Integration and Feature Selection
 
-    Not Used for:
-        - Direct copy paste of full soutions
-        - Writing final report content without modififcation
-All implementation, validation and final integration were performed by the auhtor
+### Config-Driven Multiomics Data Engineering Pipeline with Batch Correction, Metadata Harmonization, and ML-Based Feature Selection
 
-#Team
-Name: Keerthanaa Balasubramanian Shanthi
-Contribution:
-    - Pipeline design and implementation
-    -multiomics integration
-    - ML modeling
-    - Testing and debugging
+---
 
+## Overview
 
-# Tasks implemented
+This project implements a config-driven multiomics data pipeline for integrating RNA-seq and proteomics datasets from multiple public repositories including GEO and PRIDE. The pipeline is designed to support scalable, reusable, and biologically meaningful data integration workflows for downstream analytics and machine learning.
 
-# Documents and Presentation
-    - Pipeline architecutre description
-    - data schema documentation
-    - end to end workflow explanation
-    - code linked explanations
-    - clear structure and readability
-    - Innovative multiomics integration
-    - dashboard for results
+The system combines modern data engineering principles with bioinformatics workflows to automate:
 
-# Data Ingestion
-    - Structed data( now works with synthetic data)
-    - semi-structed data parsing (gene count files)
-    - Automated batch injestion pipeline
+* Data ingestion
+* Metadata harmonization
+* Feature ID harmonization
+* Data normalization
+* Batch effect detection and correction
+* Multiomics feature alignment
+* Machine learning-based feature selection
+* Quality control reporting
+* Dashboard generation
 
-# Data Processing and cleaning
-    - ETL pipeline(cleaning, normalization, transformation)
-    - medallion architecture
-    - metadata harmonization(ontology +fuzzy matching)
-    - Feature ID harmonization (Ensembl/Uniprot)
-    - missing value imputation (proteomics)
-    -schema validation
+The pipeline follows a medallion architecture (Bronze → Gold) and supports structured and semi-structured biomedical datasets.
 
-# Advanced features
-    - Data lieage tracking 
-    - ML model (Random Forest feature selection)
-    - Batch effect detection(PCA, PVCA)
-    - Batch correction (ComBat) condiitonal only batch effect is found
+---
 
-# Visualization and Monitoring
-    - HTML dashboard 
-    - PCA (before and after batch correction)
-    - pipeline statistics tracking
-    - QC reports
+# Motivation
 
-# Data Sharing
-    - Dashboards can be shared as data product along with gold layer
-    - structred  outputs
+Multiomics datasets generated across independent studies are often heterogeneous, inconsistently annotated, and affected by technical batch effects. Integrating these datasets reproducibly while preserving biological signal remains a major challenge in computational biology.
 
-# Data product
-    - Defined data schema (metadata + expression) 
-    - API- ready structure
-    - Validation and testing hooks
-    - can be deployed in cloud platforms like databricks with minimal chages retaining the architecture
+This project was developed to demonstrate how modern data engineering workflows can support scalable and reproducible multiomics integration using configurable ETL pipelines, metadata harmonization, automated validation, and machine learning.
 
-# Logging
-    - Structured logging across all stages
-    - Error handling and fallbacks
+The project focuses on:
 
-# Project Overview
-This project implemets a config driven multi-omics pipeline that integrates RNA-seq and proteomics datasets from multiple repositories (GEO and PRIDE)
+* Cross-study RNA-seq and proteomics integration
+* Metadata standardization
+* Feature harmonization across repositories
+* Automated batch effect handling
+* ML-ready data generation
+* Reproducible analytical workflows
 
-The pipeline is designed for:
-    - resuability
-    - scalability
-    - biological validity
-
-It performs:
-    - Data ingestion
-    - Harmonization
-    - Normalization
-    - Batch effect detection and correction
-    - Feature selection using machine learning
-
-# Pipeline Architecture
-data/
-│
-├── bronze/      ← raw ingested data
-├── gold/        ← final analytics-ready data
-
-# Pipeline Flow
-Ingestion
-   ↓
-Metadata Harmonization
-   ↓
-Normalization (config-driven)
-   ↓
-Feature Harmonization (Gene/Protein IDs)
-   ↓
-Missing Value Imputation for proteomics
-   ↓
-Split by Omics (RNA / Proteomics)
-   ↓
-Feature Alignment
-   ↓
-Batch Effect Detection (PCA, PVCA)
-   ↓
-ComBat Correction (if needed)
-   ↓
-Machine Learning (Random Forest)
-   ↓
-Gold Export + QC + Stats
-
-# Data Sources
-1. GEO (RNA seq)
-    - Gene expresison counts
-    - Multiple studies combined
-    - Ensembl gene IDs
-
-2. PRIDE (Proteomics)
-    - Protein abundance data
-    - Missing values handled
-    - Uniprot IDs
-
-3. Synthetic Dataset
-    - Generated to validate:
-        - Batch effects
-        - Biological signal
-        - ML feature recovery
-
-# data schema
-Metadata
-Column              Description
-sample_id           Unique sample
-condition           Biological condition
-batch               tehcnical batch
-study_id            study source
-repository          GEO/PRIDE
-omics               RNA/Proteomics
-
-# Expression Matrix
-Row                 Column
-Sample              Feature (gene/protein)
+---
 
 # Key Features
 
-1. Config driven normalization
-    supports
-        - DESeq2(VST, rlog)
-        - TPM/FPKM
-        - Quantile
-        - z-score
-        - median normalization
+## Data Ingestion
 
-2. Meta data harmonization
-        - synonym mapping
-        - Fuzzy mapping
-        - Schema enforcement
+* Structured data ingestion using synthetic datasets
+* Semi-structured parsing of gene count files
+* Automated batch ingestion workflows
+* Support for GEO and PRIDE datasets
 
-3. Feature ID harmonization
-    - Ensembl conversion to gene symbols using BioMart
-    - Uniprot normalization
-    - this ensures cross study compatability for feature selection
+## Data Processing & Cleaning
 
-4. Batch effect handling
-    Detection
-        -PCA
-        -PVCA
-    Correction
-        - ComBat(applied only if atch effect detected)
+* ETL pipeline for cleaning, normalization, and transformation
+* Metadata harmonization using ontology mapping and fuzzy matching
+* Feature ID harmonization across Ensembl and UniProt identifiers
+* Missing value imputation for proteomics datasets
+* Schema validation and metadata verification
 
-5. Machine learning
-    - random forest classifier
-    - feature importance extraction
-    - per omics analysis
+## Batch Effect Detection & Correction
 
-6. PCA analysis
-    - before and after batch correction
-    - Used ot validate:
-        - Batch removal
-        - biological clustering
+* PCA-based batch effect detection
+* PVCA-based variance assessment
+* Conditional ComBat batch correction
+* Pre- and post-correction PCA visualization
 
-# Quality control
-Computed metriics:
-    - Missing value rate
-    - Sample count
-    - Feature count
-    - PCA variance explained
+## Machine Learning Integration
 
-# How to Run
-#activate environment
-venv\Scripts\activate
-#run pipeline
-python src/run_pipeline.py
+* Random Forest feature selection
+* Feature importance extraction
+* Per-omics analysis workflows
+* ML-ready feature matrix generation
+
+## Monitoring & Visualization
+
+* HTML dashboard generation
+* QC report generation
+* Pipeline statistics tracking
+* Logging and error handling across all stages
+
+## Data Product & Sharing
+
+* Structured analytics-ready outputs
+* API-ready data structures
+* Gold layer exports
+* Cloud-deployment-compatible architecture
+
+---
+
+# Pipeline Architecture
+
+The pipeline follows a medallion-style architecture:
+
+```text
+Raw Data Sources (GEO / PRIDE / Synthetic Data)
+                     │
+                     ▼
+┌──────────────────────────────────┐
+│ Bronze Layer                    │
+│ Raw ingested datasets           │
+└──────────────────────────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────┐
+│ Harmonization & Processing       │
+│ - Metadata harmonization         │
+│ - Feature ID alignment           │
+│ - Normalization                  │
+│ - Missing value imputation       │
+└──────────────────────────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────┐
+│ Batch Effect Analysis            │
+│ - PCA                            │
+│ - PVCA                           │
+│ - Conditional ComBat correction  │
+└──────────────────────────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────┐
+│ Machine Learning                 │
+│ Random Forest feature selection  │
+└──────────────────────────────────┘
+                     │
+                     ▼
+┌──────────────────────────────────┐
+│ Gold Layer                       │
+│ Analytics-ready integrated data  │
+└──────────────────────────────────┘
+                     │
+      ┌──────────────┴──────────────┐
+      ▼                             ▼
+Dashboard Outputs            API-ready Outputs
+```
+
+---
+
+# Pipeline Flow
+
+```text
+Data Ingestion
+      ↓
+Metadata Harmonization
+      ↓
+Normalization (Config-Driven)
+      ↓
+Feature Harmonization (Gene/Protein IDs)
+      ↓
+Missing Value Imputation
+      ↓
+Split by Omics Type
+      ↓
+Feature Alignment
+      ↓
+Batch Effect Detection (PCA, PVCA)
+      ↓
+Conditional ComBat Correction
+      ↓
+Machine Learning (Random Forest)
+      ↓
+Gold Export + QC + Statistics
+```
+
+---
+
+# Data Sources
+
+## GEO (RNA-seq)
+
+* Gene expression count datasets
+* Multiple studies combined
+* Ensembl gene identifiers
+
+## PRIDE (Proteomics)
+
+* Protein abundance datasets
+* Missing value handling implemented
+* UniProt protein identifiers
+
+## Synthetic Dataset
+
+Synthetic datasets were generated to validate:
+
+* Batch effects
+* Biological signal preservation
+* ML feature recovery
+* Pipeline robustness
+
+---
+
+# Data Schema
+
+## Metadata Schema
+
+| Column     | Description              |
+| ---------- | ------------------------ |
+| sample_id  | Unique sample identifier |
+| condition  | Biological condition     |
+| batch      | Technical batch          |
+| study_id   | Study source             |
+| repository | GEO or PRIDE             |
+| omics      | RNA-seq or Proteomics    |
+
+## Expression Matrix
+
+| Row    | Column                 |
+| ------ | ---------------------- |
+| Sample | Feature (gene/protein) |
+
+---
+
+# Technology Stack
+
+| Component                | Technology                     |
+| ------------------------ | ------------------------------ |
+| Workflow orchestration   | Python-based workflow          |
+| Data architecture        | Medallion architecture         |
+| Machine learning         | Random Forest                  |
+| Batch correction         | ComBat                         |
+| PCA analysis             | PCA / PVCA                     |
+| Identifier harmonization | BioMart / UniProt              |
+| Visualization            | HTML dashboard                 |
+| Logging                  | Structured logging             |
+| HPC compatibility        | CSC Puhti-compatible workflows |
+
+---
 
 # Repository Structure
-README.md
-requirements.txt
-LICENSE
-config/
-dashboard/
-Data/
-logs/
-src/
-venv/
+
+```text
+Multiomics_data_pipeline/
+│
+├── Data/              # Raw and processed datasets
+├── config/            # Configuration files
+├── dashboard/         # Dashboard outputs
+├── logs/              # Structured logs
+├── src/               # Core pipeline source code
+├── requirements.txt
+├── README.md
+└── LICENSE
+```
+
+---
+
+# Quality Control
+
+Computed metrics include:
+
+* Missing value rate
+* Sample count
+* Feature count
+* PCA variance explained
+* Batch effect assessment
+
+The pipeline generates QC reports and visualization outputs to validate biological signal preservation after preprocessing and batch correction.
+
+---
+
+# Scalability & Engineering Design
+
+The pipeline is designed to support:
+
+* Config-driven execution
+* Reusable ETL workflows
+* Automated metadata harmonization
+* Scalable multi-study integration
+* Cloud deployment compatibility
+* HPC execution environments
+
+The architecture can be adapted to cloud platforms such as Databricks with minimal modifications.
+
+---
+
+# Running the Pipeline
+
+## Activate Environment
+
+```bash
+venv\\Scripts\\activate
+```
+
+## Run Pipeline
+
+```bash
+python src/run_pipeline.py
+```
+
+---
+
+# Current Limitations
+
+* Real-world omics datasets require extensive standardization before ingestion
+* BioMart dependency may occasionally fail (fallback implemented)
+* Synthetic data is used for testing and validation
+* No real-time streaming support yet (batch-based pipeline)
+
+---
+
+# Future Improvements
+
+Planned enhancements include:
+
+* Real-time streaming ingestion
+* Deep learning integration
+* Cross-omics joint embedding
+* Web dashboard deployment
+* API deployment
+* Expanded lineage tracking
+* Advanced cloud-native orchestration
+
+---
 
 # Innovativeness
-- Multiomics data integration (intiated)
-- Automated metadata harmonization
-- COnfig driven achitecture
-- Automated batch detection and correction
-- ML integrated into ETL pipeline
-- synthetic validation framework
 
-# Limitations
-- The real world omics data needs standardization before this pipeline which will take rigorous robust standardization before ingestion
-- BioMart dependency may fail (fallback implemented)
-- Synthetic data used for testing (not full biological complexity)
-- No real-time streaming (batch-based pipeline)
+This project demonstrates:
 
-# Future improvements being done
-- Real-time ingestion (streaming)
-- Deep learning models
-- Cross-omics integration (joint embedding)
-- Web dashboard / API deployment
+* Multiomics data integration workflows
+* Automated metadata harmonization
+* Config-driven architecture
+* Automated batch effect detection and correction
+* Machine learning integrated directly into ETL workflows
+* Synthetic validation framework for reproducibility testing
+
+---
+
+# AI Usage Declaration
+
+AI tools were used for:
+
+* Debugging pipeline issues
+* Architectural brainstorming
+* Improving code robustness and structure
+
+AI tools were not used for:
+
+* Direct copy-paste implementation of complete solutions
+* Unmodified report generation
+
+All implementation, validation, integration, and final review were independently completed by the author.
+
+---
 
 # Conclusion
-This pipeline demonstrates a fully automated, reusable and logically meaningful data engineering solution for multi-omics data analysis and intergation:
-- Data engineering
-- Bioinformatics
-- Machine Leanring
+
+This project demonstrates a reusable and scalable multiomics data engineering workflow integrating:
+
+* Data engineering
+* Bioinformatics
+* Machine learning
+
+The pipeline combines automated ETL workflows, metadata harmonization, batch effect correction, and ML-based feature selection into a unified reproducible framework for cross-study biomedical data integration.
+
+---
+
+# License
+
+MIT License
 
 ![alt text](image-1.png)
 ![alt text](image-2.png)
